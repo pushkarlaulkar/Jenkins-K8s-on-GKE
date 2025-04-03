@@ -1,24 +1,22 @@
 ---
-apiVersion: eks.amazonaws.com/v1
-kind: IngressClassParams
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
 metadata:
-  name: alb 
+  name: jenkins-cert
+  namespace: jenkins
 spec:
-  scheme: internet-facing
+  domains:
+    - {{ .Values.domain_name }}
 
 ---
-apiVersion: networking.k8s.io/v1
-kind: IngressClass
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
 metadata:
-  name: alb
-  annotations:
-    ingressclass.kubernetes.io/is-default-class: "true" 
+  name: jenkins-security-config
+  namespace: jenkins
 spec:
-  controller: eks.amazonaws.com/alb
-  parameters:
-    apiGroup: eks.amazonaws.com
-    kind: IngressClassParams
-    name: alb 
+  redirectToHttps:
+    enabled: true
 
 ---
 apiVersion: networking.k8s.io/v1
@@ -27,16 +25,14 @@ metadata:
   name: jenkins-ingress
   namespace: jenkins
   annotations:
-        alb.ingress.kubernetes.io/certificate-arn: "{{ .Values.certificate_arn }}" 
+    kubernetes.io/ingress.class: "gce"
+    networking.gke.io/managed-certificates: "jenkins-cert"
+    networking.gke.io/v1beta1.FrontendConfig: "jenkins-security-config"
+    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
-  ingressClassName: alb 
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix 
-            backend:
-              service:
-                name: jenkins
-                port:
-                  number: 8080
+  ingressClassName: gce
+  defaultBackend:
+    service:
+      name: jenkins
+      port:
+        number: 8080
