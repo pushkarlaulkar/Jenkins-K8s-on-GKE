@@ -26,7 +26,6 @@ spec:
               value: "Asia/Dubai"
           securityContext:
             runAsUser: 0 
-            privileged: true
       volumes:
         - name: jenkins-data
           persistentVolumeClaim:
