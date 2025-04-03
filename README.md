@@ -1,18 +1,23 @@
 Instructions to deploy **Jenkins** on GCP GKE Auto Pilot cluster
   1. Deploy GKE Auto Pilot cluster GCP Console.
   2. Create a namespace. ` kubectl create ns jenkins `
-  3. Deploy the **Jenkins** deployment & service using the below command
+  3. Deploy **PVC** & **Storage Class** using below command.
+
+     ```
+     kubectl -n jenkins apply -f pvc.yml -f storage-class.yml
+     ```
+  4. Deploy the **Jenkins** deployment & service using the below command
 
      ```
      kubectl -n jenkins apply -f jenkins-dep.yml -f jenkins-svc.yml
      ```
-  4. Deploy **Ingress**, **Managed Certificate** & **Frontend Config** which will create an ALB listening on port 443 by running below command. Before running below command, in the **Managed Certificate** put the domain name you need for your application.
+  5. Deploy **Ingress**, **Managed Certificate** & **Frontend Config** which will create an ALB listening on port 443 by running below command. Before running below command, in the **Managed Certificate** put the domain name you need for your application.
      ```
      kubectl -n jenkins apply -f ingress-all.yml
      ```
-  7. Run ` kubectl -n jenkins get ingress ` to retrieve the ALB IP ( Please wait couple of minutes ). Create an A record in **Cloud DNS** or your own DNS service pointing your domain name to this IP.
-  8. Once the DNS entry has been added it will take couple of minutes ( can be 60 minutes in some cases ) for the certificate to be generated. Run ` kubectl -n jenkins get managedcertificate ` or in GCP console to check for **Active** status.
-  9. Access the app using `https://your_domain_name`.
+  6. Run ` kubectl -n jenkins get ingress ` to retrieve the ALB IP ( Please wait couple of minutes ). Create an A record in **Cloud DNS** or your own DNS service pointing your domain name to this IP.
+  7. Once the DNS entry has been added it will take couple of minutes ( can be 60 minutes in some cases ) for the certificate to be generated. Run ` kubectl -n jenkins get managedcertificate ` or in GCP console to check for **Active** status.
+  8. Access the app using `https://your_domain_name`.
 
 -----------------------------
 
