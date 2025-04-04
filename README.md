@@ -1,5 +1,5 @@
 Instructions to deploy **Jenkins** on GCP GKE Auto Pilot cluster
-  1. Deploy GKE Auto Pilot cluster GCP Console.
+  1. Deploy GKE Auto Pilot cluster GCP Console. **NAT Gateway** is required to download plugins.
   2. Create a namespace. ` kubectl create ns jenkins `
   3. Deploy **PVC** & **Storage Class** using below command.
 
