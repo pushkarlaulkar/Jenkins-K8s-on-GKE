@@ -18,6 +18,12 @@ spec:
           image: jenkins/jenkins:2.472-jdk17
           ports:
             - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /whoAmI/api/json
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
           volumeMounts:
             - name: jenkins-data
               mountPath: /var/jenkins_home
