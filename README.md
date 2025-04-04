@@ -18,6 +18,11 @@ Instructions to deploy **Jenkins** on GCP GKE Auto Pilot cluster
   6. Run ` kubectl -n jenkins get ingress ` to retrieve the ALB IP ( Please wait couple of minutes ). Create an A record in **Cloud DNS** or your own DNS service pointing your domain name to this IP.
   7. Once the DNS entry has been added it will take couple of minutes ( can be 60 minutes in some cases ) for the certificate to be generated. Run ` kubectl -n jenkins get managedcertificate ` or in GCP console to check for **Active** status.
   8. Access the app using `https://your_domain_name`.
+  9. To upgrade the application, first scale the deployment to 0, change the image and then apply the new deployment again.
+     ```
+     kubectl -n jenkins scale deployment jenkins --replicas=0
+     kubectl -n jenkins apply -f jenkins-dep.yml
+     ```
 
 -----------------------------
 
